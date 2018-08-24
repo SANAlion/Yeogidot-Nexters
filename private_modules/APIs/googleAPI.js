@@ -20,14 +20,27 @@ module.exports.searchStation = function(latitude, longtitude, callbackFunction) 
 			let stationNameArray = [];
 
 			for(let i = 0; i < JSON.parse(body).results.length; i++) {
-				if(JSON.parse(body).results[i].name.indexOf('역') != -1) {
-					stationNameArray.push(JSON.parse(body).results[i].name);
-				}
-
 				if(stationNameArray.length === 3 || i === JSON.parse(body).results.length) {
 					callbackFunction(null, stationNameArray);
 
 					break;
+				}
+
+				if(JSON.parse(body).results[i].name.indexOf('역') != -1) {
+					if(stationNameArray.length === 0) {
+						stationNameArray.push(JSON.parse(body).results[i].name);
+					}	else {
+						for(let j = 0; j < stationNameArray.length; j++) {
+							if(stationNameArray[j] !== JSON.parse(body).results[i].name) {
+								if(j === stationNameArray.length - 1) {
+									stationNameArray.push(JSON.parse(body).results[i].name);
+									console.log(stationNameArray);
+								}
+							} else {
+								continue;
+							}
+						}
+					}
 				}
 			}
 		} else callbackFunction(error, null);
